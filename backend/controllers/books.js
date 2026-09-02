@@ -1,5 +1,6 @@
 const fs = require('fs');
 const Book = require('../models/Book');
+const { IMAGES_DIR } = require('../middleware/multer-config');
 // GET /api/books — return all books
 exports.getAllBooks = async (req, res) => {
   try {
@@ -99,7 +100,7 @@ exports.updateBook = async (req, res) => {
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true },
+      { new: true, runValidators: true },
     );
 
     return res.status(200).json(updatedBook);
@@ -127,7 +128,7 @@ exports.deleteBook = async (req, res) => {
     await Book.findByIdAndDelete(req.params.id);
     if (book.imageUrl) {
       const filename = book.imageUrl.split('/').pop();
-      fs.unlink(`images/${filename}`, (err) => {
+      fs.unlink(`${IMAGES_DIR}/${filename}`, (err) => {
         if (err) console.error('Image deletion failed:', err);
       });
     }

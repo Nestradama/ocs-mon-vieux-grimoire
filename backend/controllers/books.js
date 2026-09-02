@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { optimizeImage } = require('../services/images');
 const Book = require('../models/Book');
 // GET /api/books — return all books
 exports.getAllBooks = async (req, res) => {
@@ -52,8 +51,7 @@ exports.createBook = async (req, res) => {
     bookData.userId = req.auth.userId;
 
     if (req.file) {
-      const optimizedName = await optimizeImage(req.file);
-      bookData.imageUrl = `${req.protocol}://${req.get('host')}/images/${optimizedName}`;
+      bookData.imageUrl = `${req.protocol}://${req.get('host')}/images/${req.optimizedFilename}`;
     }
 
     const book = new Book(bookData);
@@ -95,8 +93,7 @@ exports.updateBook = async (req, res) => {
     updateData.userId = req.auth.userId;
 
     if (req.file) {
-      const optimizedName = await optimizeImage(req.file);
-      updateData.imageUrl = `${req.protocol}://${req.get('host')}/images/${optimizedName}`;
+      updateData.imageUrl = `${req.protocol}://${req.get('host')}/images/${req.optimizedFilename}`;
     }
 
     const updatedBook = await Book.findByIdAndUpdate(

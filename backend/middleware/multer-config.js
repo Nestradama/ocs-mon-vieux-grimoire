@@ -1,6 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const multer = require('multer');
 const sharp = require('sharp');
+const { IMAGES_DIR } = require('../images');
 
 // Allowed type
 const MIME_TYPES = {
@@ -14,7 +16,7 @@ const MIME_TYPES = {
 // Store local in /images
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'images');
+    callback(null, IMAGES_DIR);
   },
   filename: (req, file, callback) => {
     const name = file.originalname.split(' ').join('_').split('.')[0];
@@ -39,9 +41,9 @@ const uploadImage = multer({
 }).single('image');
 
 const optimizeImage = async (file) => {
-  const originalPath = `images/${file.filename}`;
+  const originalPath = path.join(IMAGES_DIR, file.filename);
   const optimizedName = `opt_${file.filename.replace(/\.[^.]+$/, '')}.webp`;
-  const optimizedPath = `images/${optimizedName}`;
+  const optimizedPath = path.join(IMAGES_DIR, optimizedName);
 
   await sharp(originalPath)
     .resize({ width: 800, withoutEnlargement: true })

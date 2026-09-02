@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Book = require('../models/Book');
-const { IMAGES_DIR } = require('../middleware/multer-config');
+const { IMAGES_DIR } = require('../images');
 // GET /api/books — return all books
 exports.getAllBooks = async (req, res) => {
   try {
